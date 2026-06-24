@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Wishlist — CampusConnect Market</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+    <nav class="navbar-ccm">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+                <a href="/index.html" class="navbar-brand-ccm">Campus<span>Connect</span></a>
+                <div id="navUserArea" class="d-flex align-items-center gap-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title mb-4">My Wishlist</h2>
+
+            <div class="row g-4" id="wishlistGrid">
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background:var(--primary-dark);color:rgba(255,255,255,.7);padding:3rem 0 1.5rem">
+        <div class="container text-center">
+            <p style="margin:0;font-size:.85rem;opacity:.6">© 2026 CampusConnect Market. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.requireAuth()) return;
+            renderWishlist();
+        });
+
+        async function renderWishlist() {
+            const res = await API.get('/api/wishlist');
+            const grid = document.getElementById('wishlistGrid');
+
+            if (!res.data || res.data.length === 0) {
+                grid.innerHTML = '<div class="col-12 text-center py-5"><i class="far fa-heart fa-3x mb-3 text-muted"></i><p class="text-muted">Your wishlist is empty.</p><a href="/products.html" class="btn-primary-ccm d-inline-flex mx-auto">Explore Products</a></div>';
+                return;
+            }
+
+            grid.innerHTML = res.data.map(item => buildWishlistCard(item.product)).join('');
+        }
+
+        function buildWishlistCard(p) {
+            return `
+    <div class="col-md-4 col-lg-3 mb-4">
+      <div class="card-ccm h-100 p-0 overflow-hidden">
+        <img src="${p.imageUrl || '/images/placeholder.jpg'}" class="card-img-top" style="height:180px;object-fit:cover">
+        <div class="p-3">
+          <h6 class="fw-bold mb-1">${p.title}</h6>
+          <div class="text-primary fw-bold mb-3">${formatCurrency(p.price)}</div>
+          <div class="d-flex gap-2">
+            <button class="btn-primary-ccm w-100 justify-content-center btn-sm" onclick="addToCartAndRemoveFromWish(${p.id})">
+              Add to Cart
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="removeFromWish(${p.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+        }
+
+        async function removeFromWish(id) {
+            const btn = { querySelector: () => ({ className: '' }), style: {} };
+            await toggleWishlist(id, btn);
+            renderWishlist();
+        }
+
+        async function addToCartAndRemoveFromWish(id) {
+            await addToCart(id);
+            await removeFromWish(id);
+        }
+    </script>
+</body>
+
+</html>

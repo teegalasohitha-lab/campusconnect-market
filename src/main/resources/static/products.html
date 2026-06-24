@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Products — CampusConnect Market</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar-ccm">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+        <a href="/index.html" class="navbar-brand-ccm">Campus<span>Connect</span></a>
+        <div class="d-none d-md-flex align-items-center gap-1">
+          <a href="/products.html?type=EXCHANGE" class="nav-link-ccm">🎓 Student Hub</a>
+          <a href="/products.html?type=PREORDER" class="nav-link-ccm">⚡ Pre-Order</a>
+        </div>
+        <div id="navUserArea" class="d-flex align-items-center gap-2"></div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section" style="min-height: 80vh">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3">
+          <div class="card-ccm p-4">
+            <h5 class="fw-bold mb-3">Filters</h5>
+
+            <div class="mb-4">
+              <label class="form-label small text-muted">Search</label>
+              <div class="input-group">
+                <input type="text" id="filterKeyword" class="form-control" placeholder="Search...">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small text-muted">Category</label>
+              <select id="filterCategory" class="form-select">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small text-muted">Locality / Campus</label>
+              <input type="text" id="filterLocation" class="form-control" placeholder="Enter campus name"
+                list="locationOptions">
+              <datalist id="locationOptions">
+                <option value="aits tirupati">
+                <option value="renigunta">
+                <option value="mr palli">
+                <option value="annamayya cercle">
+                <option value="Bangalore, KA">
+                <option value="Hyderabad, TS">
+                <option value="Chennai, TN">
+              </datalist>
+            </div>
+
+            <div class="mb-4" id="conditionFilterArea">
+              <label class="form-label small text-muted">Condition</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="NEW" id="condNew">
+                <label class="form-check-label" for="condNew">New</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="USED" id="condUsed">
+                <label class="form-check-label" for="condUsed">Used</label>
+              </div>
+            </div>
+
+            <button class="btn-primary-ccm w-100 justify-content-center" onclick="applyFilters()">
+              Apply Filters
+            </button>
+            <button class="btn-ghost-ccm w-100 justify-content-center mt-2" onclick="resetFilters()">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Listing -->
+        <div class="col-lg-9">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 id="pageTitle" class="section-title m-0">All Products</h2>
+            <div class="text-muted small" id="resultCount">Showing 0 products</div>
+          </div>
+
+          <div class="row" id="productsGrid">
+            <!-- Skeletons -->
+            <div class="col-md-4 mb-4">
+              <div class="skeleton" style="height:350px"></div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="skeleton" style="height:350px"></div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="skeleton" style="height:350px"></div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <nav class="mt-4 d-flex justify-content-center">
+            <ul class="pagination" id="pagination"></ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:var(--primary-dark);color:rgba(255,255,255,.7);padding:3rem 0 1.5rem">
+    <div class="container text-center">
+      <p style="margin:0;font-size:.85rem;opacity:.6">© 2026 CampusConnect Market. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    let currentPage = 0;
+    const params = new URLSearchParams(window.location.search);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCategories();
+
+      // Set initial filter values from URL
+      if (params.get('keyword')) document.getElementById('filterKeyword').value = params.get('keyword');
+      if (params.get('location')) document.getElementById('filterLocation').value = params.get('location');
+
+      const isStudent = params.get('type') === 'EXCHANGE';
+      const isPreOrder = params.get('type') === 'PREORDER';
+      if (isStudent) {
+        document.getElementById('pageTitle').textContent = '🎓 Student Hub';
+      } else if (isPreOrder) {
+        document.getElementById('pageTitle').textContent = '⚡ Pre-Order Marketplace';
+      }
+
+      updateFilterVisibility();
+      loadProducts();
+
+      document.getElementById('filterCategory').addEventListener('change', updateFilterVisibility);
+    });
+
+    function updateFilterVisibility() {
+      const select = document.getElementById('filterCategory');
+      const text = select.options[select.selectedIndex]?.text;
+      const area = document.getElementById('conditionFilterArea');
+      if (text && (text.includes('Food') || text.includes('Homemade'))) {
+        area.style.display = 'none';
+      } else {
+        area.style.display = 'block';
+      }
+    }
+
+    async function loadCategories() {
+      const res = await API.get('/api/categories/top-level');
+      if (res.data) {
+        const select = document.getElementById('filterCategory');
+        const urlCat = params.get('categoryId');
+        res.data.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          if (urlCat == cat.id) opt.selected = true;
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    async function loadProducts(page = 0) {
+      currentPage = page;
+      const keyword = document.getElementById('filterKeyword').value;
+      const categoryId = document.getElementById('filterCategory').value;
+      const location = document.getElementById('filterLocation').value;
+      const type = params.get('type') || '';
+
+      const query = new URLSearchParams();
+      query.append('page', page);
+      query.append('size', 9);
+      if (keyword) query.append('keyword', keyword);
+      if (categoryId) query.append('categoryId', categoryId);
+      if (location) query.append('location', location);
+      if (type) query.append('type', type);
+
+      // Condition filters (NEW, GOOD, etc.)
+      const conds = [];
+      if (document.getElementById('condNew')?.checked) conds.push('NEW');
+      if (document.getElementById('condUsed')?.checked) {
+        conds.push('GOOD'); conds.push('FAIR'); conds.push('LIKE_NEW');
+      }
+      conds.forEach(c => query.append('condition', c));
+
+      try {
+        const res = await API.get(`/api/products?${query.toString()}`);
+        const grid = document.getElementById('productsGrid');
+
+        if (!res.data || !res.data.content || res.data.content.length === 0) {
+          grid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-search fa-3x mb-3 opacity-25"></i><p class="text-muted">No products found matching your criteria.</p></div>';
+          document.getElementById('resultCount').textContent = 'Showing 0 products';
+          document.getElementById('pagination').innerHTML = '';
+          return;
+        }
+
+        grid.innerHTML = res.data.content.map(buildProductCard).join('');
+        document.getElementById('resultCount').textContent = `Showing ${res.data.numberOfElements} of ${res.data.totalElements} products`;
+        renderPagination(res.data);
+      } catch (err) {
+        console.error('Error loading products:', err);
+        document.getElementById('productsGrid').innerHTML = '<div class="col-12 text-center py-5 text-danger"><i class="fas fa-exclamation-circle fa-3x mb-3"></i><p>Error loading products. Please try again later.</p></div>';
+      }
+    }
+
+    function renderPagination(data) {
+      const ul = document.getElementById('pagination');
+      let html = '';
+      for (let i = 0; i < data.totalPages; i++) {
+        html += `<li class="page-item ${i === data.number ? 'active' : ''}">
+      <button class="page-link" onclick="loadProducts(${i})">${i + 1}</button>
+    </li>`;
+      }
+      ul.innerHTML = html;
+    }
+
+    function applyFilters() {
+      loadProducts(0);
+    }
+
+    function resetFilters() {
+      document.getElementById('filterKeyword').value = '';
+      document.getElementById('filterCategory').value = '';
+      document.getElementById('filterLocation').value = '';
+      updateFilterVisibility();
+      loadProducts(0);
+    }
+  </script>
+</body>
+
+</html>

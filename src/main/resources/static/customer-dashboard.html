@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Dashboard — CampusConnect Market</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+    <nav class="navbar-ccm">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+                <a href="/index.html" class="navbar-brand-ccm">Campus<span>Connect</span></a>
+                <div id="navUserArea" class="d-flex align-items-center gap-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title m-0">Welcome, <span id="userName">User</span>!</h2>
+                <a href="/products.html" class="btn-primary-ccm">Go Shopping</a>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card-ccm p-4 text-center">
+                        <div class="display-5 text-primary mb-2" id="orderCount">0</div>
+                        <div class="text-muted small text-uppercase">Total Orders</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-ccm p-4 text-center">
+                        <div class="display-5 text-danger mb-2" id="wishCount">0</div>
+                        <div class="text-muted small text-uppercase">Wishlist Items</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-ccm p-4 text-center">
+                        <div class="display-5 text-success mb-2" id="cartCount">0</div>
+                        <div class="text-muted small text-uppercase">In Cart</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card-ccm p-4 h-100">
+                        <h5 class="fw-bold mb-4">Recent Orders</h5>
+                        <div id="recentOrders">
+                            <p class="text-muted text-center py-4">No recent orders.</p>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/orders.html" class="btn btn-link">View All Orders</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-ccm p-4 h-100">
+                        <h5 class="fw-bold mb-4">Quick Links</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="/profile.html" class="list-group-item list-group-item-action border-0 px-0 py-3">
+                                <i class="fas fa-user-edit me-3 text-primary"></i> Edit Profile
+                            </a>
+                            <a href="/wishlist.html" class="list-group-item list-group-item-action border-0 px-0 py-3">
+                                <i class="fas fa-heart me-3 text-danger"></i> My Wishlist
+                            </a>
+                            <a href="/cart.html" class="list-group-item list-group-item-action border-0 px-0 py-3">
+                                <i class="fas fa-shopping-cart me-3 text-success"></i> View Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background:var(--primary-dark);color:rgba(255,255,255,.7);padding:3rem 0 1.5rem">
+        <div class="container text-center">
+            <p style="margin:0;font-size:.85rem;opacity:.6">© 2026 CampusConnect Market. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.requireAuth(['CUSTOMER', 'ADMIN'])) return;
+            const user = Auth.getUser();
+            document.getElementById('userName').textContent = user.name;
+            loadStats();
+        });
+
+        async function loadStats() {
+            const [orders, wish, cart] = await Promise.all([
+                API.get('/api/orders/my'),
+                API.get('/api/wishlist'),
+                API.get('/api/cart')
+            ]);
+
+            document.getElementById('orderCount').textContent = orders.data?.length || 0;
+            document.getElementById('wishCount').textContent = wish.data?.length || 0;
+            document.getElementById('cartCount').textContent = cart.data?.length || 0;
+
+            if (orders.data?.length) {
+                document.getElementById('recentOrders').innerHTML = orders.data.slice(0, 3).map(o => `
+      <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+        <div>
+          <div class="fw-bold">Order #ORD-${o.id}</div>
+          <div class="small text-muted">${formatDate(o.orderDate)}</div>
+        </div>
+        <div class="text-end">
+          <div class="fw-bold text-primary">${formatCurrency(o.totalAmount)}</div>
+          <span class="badge-ccm bg-info small" style="font-size: .65rem">${o.status}</span>
+        </div>
+      </div>
+    `).join('');
+            }
+        }
+    </script>
+</body>
+
+</html>

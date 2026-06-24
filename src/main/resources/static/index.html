@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect Market — Hyper-local Marketplace for Students</title>
+  <meta name="description"
+    content="Buy, sell, and discover products from students, local creators, and home-based businesses near your campus." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────── -->
+  <nav class="navbar-ccm">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+        <a href="/index.html" class="navbar-brand-ccm">Campus<span>Connect</span></a>
+
+        <div class="d-none d-md-flex align-items-center gap-1">
+          <a href="/products.html" class="nav-link-ccm">Browse</a>
+          <a href="/products.html?type=EXCHANGE" class="nav-link-ccm">🎓 Student Hub</a>
+          <a href="/products.html?type=PREORDER" class="nav-link-ccm">⚡ Pre-Order</a>
+        </div>
+
+        <div id="navUserArea" class="d-flex align-items-center gap-2"></div>
+
+        <button class="d-md-none btn-ghost-ccm" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ───────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="fade-in">
+            <span class="badge-ccm badge-accent mb-3" style="font-size:.85rem;padding:.4rem 1rem">
+              🚀 India's Student Marketplace
+            </span>
+            <h1 class="hero-title mb-3">
+              Your Campus,<br>
+              Your <span class="hero-accent">Marketplace</span>
+            </h1>
+            <p class="hero-subtitle mb-4">
+              Buy & sell textbooks, electronics, homemade food, handcrafted products, and more — all from your local
+              campus community.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="hero-search mb-4">
+              <i class="fas fa-search" style="color:var(--text-muted)"></i>
+              <input type="text" id="heroSearch" placeholder="Search products, categories, sellers..." />
+              <button class="btn-accent-ccm" onclick="handleHeroSearch()">
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Quick links -->
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <a href="/products.html?type=EXCHANGE" class="btn-outline-ccm"
+                style="font-size:.85rem;color:white;border-color:rgba(255,255,255,.5)">
+                📚 Textbooks
+              </a>
+              <a href="/products.html?type=PREORDER" class="btn-outline-ccm"
+                style="font-size:.85rem;color:white;border-color:rgba(255,255,255,.5)">
+                🍱 Homemade Food
+              </a>
+              <a href="/products.html" class="btn-outline-ccm"
+                style="font-size:.85rem;color:white;border-color:rgba(255,255,255,.5)">
+                💻 Electronics
+              </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statProducts">500+</div>
+                <div class="hero-stat-label">Products</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statSellers">150+</div>
+                <div class="hero-stat-label">Sellers</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statCampuses">20+</div>
+                <div class="hero-stat-label">Campuses</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 d-none d-lg-block text-center">
+          <div class="slide-up" style="position:relative">
+            <!-- Floating product preview cards -->
+            <div style="position:relative;display:inline-block">
+              <div
+                style="background:rgba(255,255,255,.12);backdrop-filter:blur(16px);border-radius:24px;padding:2rem;border:1px solid rgba(255,255,255,.2)">
+                <div class="d-flex gap-2 mb-3">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#FF6B35"></div>
+                  <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4)"></div>
+                  <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4)"></div>
+                </div>
+                <div class="d-flex flex-column gap-3" style="width:260px">
+                  <div
+                    style="background:rgba(255,255,255,.15);border-radius:14px;padding:1rem;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;gap:.75rem">
+                    <div
+                      style="width:44px;height:44px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+                      📚</div>
+                    <div>
+                      <div style="font-size:.82rem;font-weight:600;color:white">Engineering Math</div>
+                      <div style="font-size:.75rem;color:rgba(255,255,255,.65)">₹280 · Anna Nagar</div>
+                    </div>
+                  </div>
+                  <div
+                    style="background:rgba(255,255,255,.15);border-radius:14px;padding:1rem;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;gap:.75rem">
+                    <div
+                      style="width:44px;height:44px;border-radius:10px;background:#22C55E;display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+                      🍱</div>
+                    <div>
+                      <div style="font-size:.82rem;font-weight:600;color:white">Homemade Tiffin</div>
+                      <div style="font-size:.75rem;color:rgba(255,255,255,.65)">₹80 · Pre-Order</div>
+                    </div>
+                  </div>
+                  <div
+                    style="background:rgba(255,255,255,.15);border-radius:14px;padding:1rem;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;gap:.75rem">
+                    <div
+                      style="width:44px;height:44px;border-radius:10px;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+                      🎧</div>
+                    <div>
+                      <div style="font-size:.82rem;font-weight:600;color:white">Wireless Earphones</div>
+                      <div style="font-size:.75rem;color:rgba(255,255,255,.65)">₹899 · T. Nagar</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Categories ──────────────────────────────────── -->
+  <section class="section-sm" style="background:var(--surface)">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-subtitle">Find what you need from our curated collections</p>
+      </div>
+      <div class="row g-3" id="categoriesGrid"></div>
+    </div>
+  </section>
+
+  <!-- ── Featured Products ───────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h2 class="section-title">Featured Products</h2>
+          <p class="text-muted mb-0">Latest listings from your campus</p>
+        </div>
+        <a href="/products.html" class="btn-outline-ccm" style="font-size:.85rem">View All <i
+            class="fas fa-arrow-right ms-1"></i></a>
+      </div>
+      <div class="row" id="featuredProducts">
+        <!-- Skeleton loaders -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+          <div class="skeleton" style="height:300px;border-radius:20px"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+          <div class="skeleton" style="height:300px;border-radius:20px"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+          <div class="skeleton" style="height:300px;border-radius:20px"></div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+          <div class="skeleton" style="height:300px;border-radius:20px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Student Exchange Hub Banner ─────────────────── -->
+  <section class="section-sm" style="background:linear-gradient(135deg,#FFF8F1,#FFF3E0)">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <span class="badge-ccm badge-warning mb-3" style="font-size:.85rem;padding:.4rem 1rem">🎓 Student
+            Exclusive</span>
+          <h2 class="section-title" style="color:var(--primary)">Student Exchange Hub</h2>
+          <p style="color:var(--text-secondary);font-size:1.05rem;margin-bottom:1.5rem">
+            Buy & sell used textbooks, lab records, project components, calculators, and electronics with fellow
+            students. Save money, reduce waste!
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge-ccm badge-primary" style="font-size:.82rem">📚 Textbooks</span>
+            <span class="badge-ccm badge-primary" style="font-size:.82rem">🧪 Lab Records</span>
+            <span class="badge-ccm badge-primary" style="font-size:.82rem">⚡ Components</span>
+            <span class="badge-ccm badge-primary" style="font-size:.82rem">🔢 Calculators</span>
+          </div>
+          <a href="/student-exchange.html" class="btn-accent-ccm">Explore Student Hub <i
+              class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="col-lg-6">
+          <div class="row g-3" id="studentHubPreview"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pre-Order Marketplace Banner ───────────────── -->
+  <section class="section" style="background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <span class="badge-ccm"
+            style="background:rgba(255,107,53,.25);color:#FF8F65;font-size:.85rem;padding:.4rem 1rem;margin-bottom:1rem;display:inline-block">⚡
+            Pre-Order Marketplace</span>
+          <h2 style="font-size:2.2rem;font-weight:800;margin-bottom:1rem">Order Before It's Made!</h2>
+          <p style="opacity:.85;font-size:1.05rem;margin-bottom:1.5rem">
+            Support local home-based businesses and student entrepreneurs. Pre-order homemade food, crafts, and custom
+            products before they're created.
+          </p>
+          <a href="/pre-order.html" class="btn-accent-ccm">View Pre-Orders <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="col-lg-6">
+          <div class="row g-3" id="preOrderPreview"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ────────────────────────────────── -->
+  <section class="section" style="background:var(--surface)">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get started in 3 simple steps</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+          <div class="text-center p-4">
+            <div
+              style="width:80px;height:80px;border-radius:50%;background:rgba(26,60,110,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem">
+              🔍</div>
+            <h4 style="font-weight:700;margin-bottom:.75rem;color:var(--primary)">Discover</h4>
+            <p style="color:var(--text-secondary)">Browse thousands of products from students and local sellers near
+              your campus</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-4">
+            <div
+              style="width:80px;height:80px;border-radius:50%;background:rgba(255,107,53,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem">
+              🛒</div>
+            <h4 style="font-weight:700;margin-bottom:.75rem;color:var(--primary)">Order</h4>
+            <p style="color:var(--text-secondary)">Add to cart, place your order and connect with the seller for pickup
+              or delivery</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-4">
+            <div
+              style="width:80px;height:80px;border-radius:50%;background:rgba(34,197,94,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem">
+              ⭐</div>
+            <h4 style="font-weight:700;margin-bottom:.75rem;color:var(--primary)">Review</h4>
+            <p style="color:var(--text-secondary)">Rate your experience and help other students make informed buying
+              decisions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────────────── -->
+  <section class="section-sm" style="background:var(--accent)">
+    <div class="container text-center" style="color:white">
+      <h2 style="font-weight:800;margin-bottom:.75rem">Start Selling Today!</h2>
+      <p style="opacity:.9;font-size:1.05rem;margin-bottom:1.5rem">Join hundreds of student sellers and reach buyers
+        right in your campus community</p>
+      <a href="/register.html?role=SELLER" class="btn-primary-ccm"
+        style="background:white;color:var(--accent);font-size:1rem;padding:.75rem 2rem">
+        <i class="fas fa-store me-2"></i> Become a Seller
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────── -->
+  <footer style="background:var(--primary-dark);color:rgba(255,255,255,.7);padding:3rem 0 1.5rem">
+    <div class="container">
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="navbar-brand-ccm mb-2" style="color:white">Campus<span>Connect</span></div>
+          <p style="font-size:.9rem;opacity:.7">Hyper-local marketplace connecting students, creators, and local
+            businesses on campus.</p>
+        </div>
+        <div class="col-md-2">
+          <h6 style="color:white;font-weight:700;margin-bottom:1rem">Marketplace</h6>
+          <ul style="list-style:none;padding:0">
+            <li><a href="/products.html" style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">All
+                Products</a></li>
+            <li><a href="/products.html?type=EXCHANGE"
+                style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">Student Hub</a></li>
+            <li><a href="/products.html?type=PREORDER"
+                style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">Pre-Orders</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6 style="color:white;font-weight:700;margin-bottom:1rem">Account</h6>
+          <ul style="list-style:none;padding:0">
+            <li><a href="/login.html" style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">Login</a>
+            </li>
+            <li><a href="/register.html"
+                style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">Register</a></li>
+            <li><a href="/profile.html"
+                style="color:rgba(255,255,255,.6);font-size:.9rem;text-decoration:none">Profile</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr style="border-color:rgba(255,255,255,.1)">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <p style="margin:0;font-size:.85rem;opacity:.6">© 2026 CampusConnect Market. All rights reserved.</p>
+        <p style="margin:0;font-size:.85rem;opacity:.6">Made with ❤️ for students</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // ── Hero search ──────────────────────────────────────
+    function handleHeroSearch() {
+      const q = document.getElementById('heroSearch').value.trim();
+      if (q) window.location.href = `/products.html?keyword=${encodeURIComponent(q)}`;
+    }
+    document.getElementById('heroSearch').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleHeroSearch();
+    });
+
+    // ── Load categories ──────────────────────────────────
+    const CATEGORY_COLORS = ['#1A3C6E', '#FF6B35', '#6C63FF', '#28A745', '#DC3545', '#17A2B8', '#FFC107', '#E83E8C'];
+    async function loadCategories() {
+      const res = await API.get('/api/categories/top-level');
+      const grid = document.getElementById('categoriesGrid');
+      if (!res.data) return;
+
+      grid.innerHTML = res.data.slice(0, 8).map((cat, i) => `
+    <div class="col-6 col-sm-4 col-lg-3 mb-3">
+      <div class="category-card" onclick="location.href='/products.html?categoryId=${cat.id}'">
+        <div class="category-icon-wrap" style="background:${CATEGORY_COLORS[i % CATEGORY_COLORS.length]}20">
+          <i class="fas ${cat.icon || 'fa-tag'}" style="color:${CATEGORY_COLORS[i % CATEGORY_COLORS.length]}"></i>
+        </div>
+        <div class="category-name">${cat.name}</div>
+      </div>
+    </div>`).join('');
+    }
+
+    // ── Load featured products ───────────────────────────
+    async function loadFeatured() {
+      const res = await API.get('/api/products?size=8');
+      const grid = document.getElementById('featuredProducts');
+      if (!res.data?.content?.length) { grid.innerHTML = '<div class="col-12 text-center text-muted py-5">No products yet.</div>'; return; }
+      grid.innerHTML = res.data.content.map(buildProductCard).join('');
+    }
+
+    // ── Load student hub preview ─────────────────────────
+    async function loadStudentHub() {
+      const res = await API.get('/api/products/student-exchange?size=2');
+      const grid = document.getElementById('studentHubPreview');
+      if (!res.data?.content?.length) return;
+      grid.innerHTML = res.data.content.map(p => `
+    <div class="col-6">
+      <div class="card-ccm p-3 text-center" onclick="location.href='/product-detail.html?id=${p.id}'" style="cursor:pointer">
+        <img src="${p.imageUrl || 'https://via.placeholder.com/200'}" alt="${p.title}"
+             style="width:100%;height:110px;object-fit:cover;border-radius:10px;margin-bottom:.75rem"
+             onerror="this.src='https://via.placeholder.com/200x110/f4f7fc/1a3c6e?text=Item'">
+        <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);margin-bottom:.3rem">${p.title}</div>
+        <div style="font-size:.9rem;font-weight:800;color:var(--primary)">₹${p.price}</div>
+      </div>
+    </div>`).join('');
+    }
+
+    // ── Load pre-order preview ───────────────────────────
+    async function loadPreOrders() {
+      const res = await API.get('/api/products/pre-orders?size=2');
+      const grid = document.getElementById('preOrderPreview');
+      if (!res.data?.content?.length) return;
+      grid.innerHTML = res.data.content.map(p => `
+    <div class="col-6">
+      <div style="background:rgba(255,255,255,.1);border-radius:14px;padding:1rem;border:1px solid rgba(255,255,255,.2);cursor:pointer" onclick="location.href='/product-detail.html?id=${p.id}'">
+        <img src="${p.imageUrl || 'https://via.placeholder.com/200'}" alt="${p.title}"
+             style="width:100%;height:110px;object-fit:cover;border-radius:10px;margin-bottom:.75rem"
+             onerror="this.src='https://via.placeholder.com/200x110/ffffff20/ffffff?text=Item'">
+        <div style="font-size:.82rem;font-weight:600;color:white;margin-bottom:.3rem">${p.title}</div>
+        <div style="font-size:.9rem;font-weight:800;color:var(--accent)">₹${p.price}</div>
+      </div>
+    </div>`).join('');
+    }
+
+    loadCategories();
+    loadFeatured();
+    loadStudentHub();
+    loadPreOrders();
+  </script>
+</body>
+
+</html>

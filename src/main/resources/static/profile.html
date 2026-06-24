@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile — CampusConnect Market</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+    <nav class="navbar-ccm">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+                <a href="/index.html" class="navbar-brand-ccm">Campus<span>Connect</span></a>
+                <div id="navUserArea" class="d-flex align-items-center gap-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="section-title mb-4">Account Settings</h2>
+
+                    <div class="card-ccm p-4 mb-4 text-center">
+                        <div class="d-inline-block position-relative mb-3">
+                            <img id="profilePreview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                class="rounded-circle border" style="width:120px;height:120px;object-fit:cover">
+                        </div>
+                        <h4 id="userName" class="fw-bold m-0">Loading...</h4>
+                        <p id="userRole" class="badge-ccm badge-primary mt-2">USER</p>
+                    </div>
+
+                    <div class="card-ccm p-4">
+                        <form id="profileForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="name" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" id="email" class="form-control" readonly>
+                                    <div class="form-text">Primary email cannot be changed.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" id="phone" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Locality / Campus</label>
+                                    <input type="text" id="locality" class="form-control">
+                                </div>
+                                <div class="col-12 mt-4 text-end">
+                                    <button type="submit" class="btn-primary-ccm px-5">Save Changes</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background:var(--primary-dark);color:rgba(255,255,255,.7);padding:3rem 0 1.5rem">
+        <div class="container text-center">
+            <p style="margin:0;font-size:.85rem;opacity:.6">© 2026 CampusConnect Market. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.requireAuth()) return;
+            loadProfile();
+        });
+
+        async function loadProfile() {
+            const user = Auth.getUser();
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userRole').textContent = user.role;
+            document.getElementById('name').value = user.name;
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('locality').value = user.locality || '';
+            if (user.profileImage) document.getElementById('profilePreview').src = user.profileImage;
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                locality: document.getElementById('locality').value
+            };
+
+            const res = await API.put('/api/auth/profile', payload);
+            if (res.success) {
+                Toast.show('Profile updated successfully', 'success');
+                Auth.save(Auth.getToken(), res.data); // Update local storage
+                loadProfile();
+            } else {
+                Toast.show(res.message || 'Update failed', 'error');
+            }
+        });
+    </script>
+</body>
+
+</html>

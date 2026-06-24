@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — CampusConnect Market</title>
+  <meta name="description" content="Join CampusConnect Market as a buyer or seller."/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <style>
+    body { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%); min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .role-card { border: 2px solid var(--border); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; transition: all var(--transition); text-align: center; }
+    .role-card:hover, .role-card.selected { border-color: var(--primary); background: var(--surface-2); }
+    .role-card.selected { border-color: var(--accent); background: rgba(255,107,53,.06); }
+  </style>
+</head>
+<body>
+
+<nav style="padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between">
+  <a href="/index.html" class="navbar-brand-ccm" style="color:white">Campus<span>Connect</span></a>
+  <a href="/login.html" style="color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500">Have account? <strong style="color:var(--accent)">Sign in →</strong></a>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-card scale-in" style="max-width:520px">
+    <div class="auth-header">
+      <div class="auth-logo mb-2">Campus<span>Connect</span></div>
+      <h2 style="font-size:1.5rem;font-weight:800;color:var(--text-primary)">Create your account</h2>
+      <p style="color:var(--text-secondary);font-size:.9rem">Join thousands of students buying and selling on campus</p>
+    </div>
+
+    <div id="registerError" class="form-error" style="display:none;margin-bottom:1rem;padding:.75rem;background:#FEE2E2;border-radius:var(--radius-sm)"></div>
+
+    <form id="registerForm" onsubmit="handleRegister(event)">
+
+      <!-- Role Selection -->
+      <div class="form-group">
+        <label class="form-label">I want to...</label>
+        <div class="d-flex gap-2">
+          <div class="role-card flex-1 selected" id="roleCustomer" onclick="selectRole('CUSTOMER')">
+            <div style="font-size:1.8rem;margin-bottom:.4rem">🛒</div>
+            <div style="font-size:.88rem;font-weight:700">Buy Products</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Customer</div>
+          </div>
+          <div class="role-card flex-1" id="roleSeller" onclick="selectRole('SELLER')">
+            <div style="font-size:1.8rem;margin-bottom:.4rem">🏪</div>
+            <div style="font-size:.88rem;font-weight:700">Sell Products</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Seller</div>
+          </div>
+        </div>
+        <input type="hidden" id="role" name="role" value="CUSTOMER"/>
+      </div>
+
+      <div class="row g-2">
+        <div class="col-12 form-group">
+          <label class="form-label" for="name">Full Name *</label>
+          <div style="position:relative">
+            <i class="fas fa-user" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="text" id="name" class="form-control-ccm" placeholder="Arjun Kumar" required style="padding-left:2.75rem"/>
+          </div>
+        </div>
+        <div class="col-12 form-group">
+          <label class="form-label" for="email">Email Address *</label>
+          <div style="position:relative">
+            <i class="fas fa-envelope" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="email" id="email" class="form-control-ccm" placeholder="you@email.com" required style="padding-left:2.75rem"/>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <label class="form-label" for="password">Password *</label>
+          <div style="position:relative">
+            <i class="fas fa-lock" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="password" id="password" class="form-control-ccm" placeholder="Min 6 chars" required style="padding-left:2.75rem"/>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <label class="form-label" for="confirmPassword">Confirm Password *</label>
+          <div style="position:relative">
+            <i class="fas fa-lock" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="password" id="confirmPassword" class="form-control-ccm" placeholder="Repeat password" required style="padding-left:2.75rem"/>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <div style="position:relative">
+            <i class="fas fa-phone" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="tel" id="phone" class="form-control-ccm" placeholder="9876543210" style="padding-left:2.75rem"/>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <label class="form-label" for="locality">Campus / Locality</label>
+          <div style="position:relative">
+            <i class="fas fa-map-marker-alt" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="text" id="locality" class="form-control-ccm" placeholder="Anna Nagar, Chennai" style="padding-left:2.75rem"/>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;font-size:.82rem;color:var(--text-secondary)">
+        By creating an account, you agree to our <a href="#" style="color:var(--primary)">Terms of Service</a> and <a href="#" style="color:var(--primary)">Privacy Policy</a>.
+      </div>
+
+      <button type="submit" class="btn-primary-ccm w-100" style="justify-content:center;padding:.8rem;font-size:1rem">
+        <i class="fas fa-user-plus me-2"></i>Create Account
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:.9rem;color:var(--text-secondary)">
+      Already have an account? <a href="/login.html" style="color:var(--primary);font-weight:600">Sign in →</a>
+    </p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/main.js"></script>
+<script>
+// Pre-select role from URL param
+const urlRole = new URLSearchParams(location.search).get('role');
+if (urlRole === 'SELLER') selectRole('SELLER');
+
+function selectRole(role) {
+  document.getElementById('role').value = role;
+  document.getElementById('roleCustomer').classList.toggle('selected', role === 'CUSTOMER');
+  document.getElementById('roleSeller').classList.toggle('selected', role === 'SELLER');
+}
+</script>
+</body>
+</html>
